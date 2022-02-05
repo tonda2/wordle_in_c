@@ -53,16 +53,20 @@ void check_letters (int ** state, char * word, char * guess) {
 
     for (int i = 0; i < 5; i ++) {
         if (tolower(guess[i]) == tolower(word[i])) {
+            //printf("ano\n");
             taken[i] = 1;
             (*state)[i] = 2;
+        }
+        else {
+            //printf("ne\n");
         }
     }
 
     for (int i = 0; i < 5; i ++) {
         for (int j = 0; j < 5; j ++) {
-            if (i != j && taken[j] == 0 && tolower(guess[i]) == tolower(word[j])){
+            if ((*state)[i] != 2 && taken[j] == 0 && tolower(guess[i]) == tolower(word[j])){
                 (*state)[i] = 1;
-                taken[i] = 1;
+                taken[j] = 1;
                 break;
             }
         }
