@@ -42,11 +42,12 @@ void choose_word (char * word[6]){
     (*word)[5] = '\0';
 }
 
-int valid_word (char * guess){
+int valid_word (char * guess, int count){
     size_t len = strlen(guess);
 
     if (len != 6) {
         len > 6 ? printf("Word too long.\n") : printf("Word too short.\n");
+        printf("Your %d. guess: ", count + 1);
         return 0;
     }
 
@@ -89,7 +90,10 @@ void check_letters (int ** state, char * word, char * guess) {
 
 int response (char * word, char * guess){
     if (!strcasecmp(word, guess)){
-        printf("Splendid. It was %5s.\n", guess);
+        green();
+        printf("%s\n", word);
+        reset();
+        printf("Splendid. The word was %5s.\n", guess);
         return 1;
     }
 
@@ -109,6 +113,7 @@ int response (char * word, char * guess){
         }
 
         printf("%c", guess[i]);
+        reset();
     }
     printf("\n");
 
@@ -117,12 +122,12 @@ int response (char * word, char * guess){
 }
 
 void user_input (char * word){
-    char guess[10];
+    char guess[100];
     int count = 0;
 
-    printf("Your guess:\n");
+    printf("Your 1. guess: ");
     while(count < 6 && fgets(guess, sizeof(guess), stdin)) {
-        if (!valid_word(guess)){continue;}
+        if (!valid_word(guess, count)){continue;}
         guess[5] = '\0';
 
         if (response(word, guess) == 1){
@@ -130,10 +135,13 @@ void user_input (char * word){
         }
 
         count ++;
+        if (count < 6) {
+            printf("Your %d. guess: ", count + 1);
+        }
     }
 
     if (count == 6) {
-        printf("Better luck next time.\n");
+        printf("The word was %s. Better luck next time.\n", word);
     }
 }
 
