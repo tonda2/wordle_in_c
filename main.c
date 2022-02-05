@@ -23,16 +23,16 @@ void choose_word (char * word[6]){
     FILE * word_list = fopen(FILENAME, "r");
     fseek(word_list, (random - 1) * 6, SEEK_SET);
     char line[6];
-    fgets(line, sizeof(line) + 1, word_list);
+    fgets(line, sizeof(line), word_list);
     fclose(word_list);
 
     strcpy((*word), line);
+    (*word)[5] = '\0';
 }
 
 int valid_word (char * guess){
-    printf("%s%ld\n", guess, strlen(guess));
-
     size_t len = strlen(guess);
+
     if (len != 6) {
         len > 6 ? printf("Word too long.\n") : printf("Word too short.\n");
         return 0;
@@ -48,18 +48,65 @@ int valid_word (char * guess){
     return 1;
 }
 
+void check_letters (int ** state, char * word, char * guess) {
+    int * taken = (int *) calloc (5, sizeof(int));
+
+    for (int i = 0; i < 5; i ++) {
+        if (tolower(guess[i]) == tolower(word[i])) {
+            taken[i] = 1;
+            (*state)[i] = 2;
+        }
+    }
+
+    for (int i = 0; i < 5; i ++) {
+        for (int j = 0; j < 5; j ++) {
+            if (i != j && taken[j] == 0 && tolower(guess[i]) == tolower(word[j])){
+                (*state)[i] = 1;
+                taken[i] = 1;
+                break;
+            }
+        }
+    }
+
+    free(taken);
+}
+
+int response (char * word, char * guess){
+    if (!strcasecmp(word, guess)){
+        printf("Splendid. It was %5s.\n", guess);
+        return 1;
+    }
+
+    int * state = (int *) calloc (5, sizeof(int));
+    check_letters(&state, word, guess);    
+
+    for (int i = 0; i < 5; i ++) {
+        printf("%d\n", state[i]);
+    }
+
+    free(state);
+    return 0;
+}
+
 void user_input (char * word){
     char * guess;
     size_t len;
     int count = 0;
 
     printf("Your guess:\n");
-    while(getline(&guess, &len, stdin) > -1 && count < 6) {
+    while(count < 6 && getline(&guess, &len, stdin) > -1) {
         if (!valid_word(guess)){continue;}
+        guess[5] = '\0';
 
-        response(word, guess);
+        if (response(word, guess) == 1){
+            break;
+        }
 
         count ++;
+    }
+
+    if (count == 6) {
+        printf("Better luck next time.\n");
     }
 }
 
@@ -72,7 +119,7 @@ int main (void){
     srand(time(0));
     choose_word(&word);
 
-    printf("Chosen word: %s", word);
+    printf("Chosen word: %s\n", word);
     user_input(word);
     return 0;
 }
