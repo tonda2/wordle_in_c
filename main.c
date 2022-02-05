@@ -93,12 +93,11 @@ int response (char * word, char * guess){
 }
 
 void user_input (char * word){
-    char * guess;
-    size_t len;
+    char guess[10];
     int count = 0;
 
     printf("Your guess:\n");
-    while(count < 6 && getline(&guess, &len, stdin) > -1) {
+    while(count < 6 && fgets(guess, sizeof(guess), stdin)) {
         if (!valid_word(guess)){continue;}
         guess[5] = '\0';
 
