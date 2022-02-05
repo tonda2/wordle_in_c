@@ -6,6 +6,18 @@
 
 #define FILENAME "answers.txt"
 
+void yellow () {
+    printf("\033[1;33m");
+}
+
+void green () {
+    printf("\033[0;32m");
+}
+
+void reset () {
+    printf("\033[0m");
+}
+
 int list_length (){
     FILE * file = fopen(FILENAME, "r");
     if (!file) return 0;
@@ -85,8 +97,20 @@ int response (char * word, char * guess){
     check_letters(&state, word, guess);    
 
     for (int i = 0; i < 5; i ++) {
-        printf("%d\n", state[i]);
+        switch (state[i]){
+            case 1:
+                yellow();
+                break;
+            case 2:
+                green();
+                break;
+            case 0:
+                reset();
+        }
+
+        printf("%c", guess[i]);
     }
+    printf("\n");
 
     free(state);
     return 0;
