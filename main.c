@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
 
 #define FILENAME "answers.txt"
 
@@ -35,6 +36,13 @@ int valid_word (char * guess){
     if (len != 6) {
         len > 6 ? printf("Word too long.\n") : printf("Word too short.\n");
         return 0;
+    }
+
+    for (int i = 0; i < 5; i ++) {
+        if (!isalpha(guess[i])){
+            printf("Invalid word.\n");
+            return 0;
+        }
     }
 
     return 1;
