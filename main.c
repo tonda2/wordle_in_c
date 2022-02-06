@@ -145,6 +145,32 @@ void user_input (char * word){
     }
 }
 
+int keep_playing () {
+    char check;
+    int play = -1;
+
+    printf("New game? (y/n)\n");
+    while (play == -1) {
+        scanf("%c", &check);
+        switch (check) {
+            case 'y':
+                scanf("%c", &check);
+                play = 1;
+                break;
+            case 'n':
+                play = 0;
+                break;
+            case '\n':
+                break;
+            default:
+                printf("Type 'y' for new game or 'n' to stop.\n");
+                play = -1;
+        }
+    }
+
+    return play;
+}
+
 int main (void){
     char * word;
     printf("\033[1;1H\033[2J");  //clear terminal window
