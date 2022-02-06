@@ -27,7 +27,7 @@ int list_length (){
     return len;
 }
 
-void choose_word (char * word[6]){
+void choose_word (char ** word){
     int max = list_length();
     int random = (rand() % (max + 1));
     printf("random number: %d\n", random);
@@ -172,8 +172,7 @@ int keep_playing () {
 }
 
 int main (void){
-    char * word;
-    printf("\033[1;1H\033[2J");  //clear terminal window
+    char * word = (char *) calloc (6, sizeof(char));
 
     printf("list len: %d\n", list_length());
 
