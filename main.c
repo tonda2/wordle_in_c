@@ -112,7 +112,7 @@ int response (char * word, char * guess){
                 reset();
         }
 
-        printf("%c", guess[i]);
+        printf("%c", toupper(guess[i]));
         reset();
     }
     printf("\n");
@@ -174,16 +174,17 @@ int keep_playing () {
 int main (void){
     char * word = (char *) calloc (6, sizeof(char));
     int play = 1;
+    printf("\033[1;1H\033[2J");  //clear terminal window
+    printf("Welcome to Wordle!\n");
 
     while(play){
-        printf("\033[1;1H\033[2J");  //clear terminal window
-
         srand(time(0));
         choose_word(&word);
         user_input(word);
 
         if (keep_playing()){play = 1;}
         else {play = 0;}
+        printf("\033[1;1H\033[2J");  //clear terminal window
     }
 
     free(word);
