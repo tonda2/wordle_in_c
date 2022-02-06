@@ -30,7 +30,7 @@ int list_length (){
 void choose_word (char ** word){
     int max = list_length();
     int random = (rand() % (max + 1));
-    printf("random number: %d\n", random);
+    //printf("random number: %d\n", random);
 
     FILE * word_list = fopen(FILENAME, "r");
     fseek(word_list, (random - 1) * 6, SEEK_SET);
@@ -173,13 +173,19 @@ int keep_playing () {
 
 int main (void){
     char * word = (char *) calloc (6, sizeof(char));
+    int play = 1;
 
-    printf("list len: %d\n", list_length());
+    while(play){
+        printf("\033[1;1H\033[2J");  //clear terminal window
 
-    srand(time(0));
-    choose_word(&word);
+        srand(time(0));
+        choose_word(&word);
+        user_input(word);
 
-    printf("Chosen word: %s\n", word);
-    user_input(word);
+        if (keep_playing()){play = 1;}
+        else {play = 0;}
+    }
+
+    free(word);
     return 0;
 }
