@@ -4,7 +4,8 @@
 #include <time.h>
 #include <ctype.h>
 
-#define FILENAME "answers.txt"
+#define FILENAME_CZ "cz_words.txt"
+#define FILENAME_EN "en_words.txt"
 
 void yellow () {
     printf("\033[1;33m");
@@ -18,8 +19,9 @@ void reset () {
     printf("\033[0m");
 }
 
-int list_length (){
-    FILE * file = fopen(FILENAME, "r");
+int list_length (int lang){
+    FILE * file;
+    lang == 1 ? file = fopen(FILENAME_CZ, "r") : file = fopen(FILENAME_EN, "r");
     if (!file) return 0;
     fseek(file, 0, SEEK_END);
     int len = (ftell(file)/6);
@@ -27,12 +29,13 @@ int list_length (){
     return len;
 }
 
-void choose_word (char ** word){
-    int max = list_length();
+void choose_word (char ** word, int lang){
+    int max = list_length(lang);
     int random = (rand() % (max + 1));
     //printf("random number: %d\n", random);
 
-    FILE * word_list = fopen(FILENAME, "r");
+    FILE * word_list;
+    lang == 1 ? word_list = fopen(FILENAME_CZ, "r") : word_list = fopen(FILENAME_EN, "r");
     fseek(word_list, (random - 1) * 6, SEEK_SET);
     char line[6];
     fgets(line, sizeof(line), word_list);
@@ -171,7 +174,33 @@ int keep_playing () {
     return play;
 }
 
-int main (void){
+int select_language (int argc, char ** argv){
+    if (argc < 2){
+        printf("Argument missing. Select cz for czech, en for englisth language.\n");
+        return 0;
+    }
+    else if (argc > 2){
+        printf("That's too many arguments. Select cz for czech, en for englisth language.\n");
+        return 0;
+    }
+
+    if (!strcasecmp(argv[1], "cz")){
+        return 1;
+    }
+    else if (!strcasecmp(argv[1], "en")){
+        return 2;
+    }
+
+    printf("Invalid argument. Select cz for czech, en for englisth language.\n");
+    return 0;
+}
+
+int main (int argc, char * argv[]){
+    int lang = select_language(argc, argv);
+    if (!lang) {
+        return 0;
+    }
+
     char * word = (char *) calloc (6, sizeof(char));
     int play = 1;
     printf("\033[1;1H\033[2J");  //clear terminal window
@@ -179,7 +208,7 @@ int main (void){
 
     while(play){
         srand(time(0));
-        choose_word(&word);
+        choose_word(&word, lang);
         user_input(word);
 
         if (keep_playing()){play = 1;}
