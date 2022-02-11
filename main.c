@@ -57,6 +57,7 @@ int valid_word (char * guess, int count){
     for (int i = 0; i < 5; i ++) {
         if (!isalpha(guess[i])){
             printf("Invalid word.\n");
+            printf("Your %d. guess: ", count + 1);
             return 0;
         }
     }
